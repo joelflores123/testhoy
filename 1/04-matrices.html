@@ -16,9 +16,8 @@
 <body>
     <h4>Ejercicio con Matrices</h4>
     <div>
-        Dimension de la Matriz:
+        Dimension de la Matriz:[Fil]
         <select id="select-dimension-filas">
-            <option value="2">2</option>
             <option value="3">3</option>
             <option value="4">4</option>
             <option value="5">5</option>
@@ -29,8 +28,8 @@
             <option value="10">10</option>
         </select>
         x
+        [Col]
         <select id="select-dimension-columnas">
-            <option value="2">2</option>
             <option value="3">3</option>
             <option value="4">4</option>
             <option value="5">5</option>
@@ -41,11 +40,12 @@
             <option value="10">10</option>
         </select>
     </div>
+
     <br>
-    <table id="id-table-vector-numerico" border="1" cellspacing="1" cellpadding="1">
+    <table id="id-table-matriz-numerico" border="1" cellspacing="1" cellpadding="1">
         <thead>
             <tr>
-                <td colspan="10">Matriz numerico de N elementos</td>
+                <td colspan="10">Matriz numerica de M x N elementos</td>
             </tr>
         </thead>
         <tbody>
@@ -57,79 +57,550 @@
             <tr>
                 <td colspan="5"><button id="btn-cargar-matriz">Cargar Matriz</button></td>
                 <td colspan="5"><button id="btn-vaciar-matriz">Vaciar Matriz</button></td>
+                <td colspan="5"><button id="btn-suma-matriz">Suma de toda la matriz</button></td>
+                <td colspan="5"><button id="btn-cambio-columna">Cambiar Segunda Columna por anteúltima</button></td>
+            </tr>
+            <tr>
+                <td colspan="5"><button id="btn-suma-contar">Sumar y Contar elementos positivos y negativos</button>
+                </td>
+                <td colspan="5"><button id="btn-negativo-positivo">Negativo [-1], Positivo [0]</button></td>
+                <td colspan="5"><button id="btn-producto-matriz">Producto del contorno de la Matriz</button></td>
+                <td colspan="5"><button id="btn-cambio-fila">Cambiar Fila Primera por Fila ultima</button></td>
+                <td colspan="5"><button id="btn-columna-fila">Suma de cada [Fila] y [Columna]</button></td>
+                <td colspan="5"><button id="btn-media-aritmetica">Media Aritmetica de la [Fila]</button></td>
+            </tr>
+            <tr>
+                <td colspan="5"><button id="btn-ordenar-matriz">Ordenar Matriz ASC</button></td>
+                <td colspan="5"><button id="btn-suma-indices">Suma de Indices</button></td>
+                <td colspan="5"><button id="btn-par-impar">Par[0] Impar[1] </button></td>
+                <td colspan="5"><button id="btn-numero-mayor">Mayor en la Matriz</button></td>
+                <td colspan="5"><button id="btn-asignacion-letra">Asignar [N] o [D]</button></td>
+                <td colspan="5"><button id="btn-traspuesta-matriz">Traspuesta de la matriz</button></td>
+            </tr>
+            <tr>
+                <td colspan="5"><button id="btn-obtener-elemento">Obtener Elemento</button></td>
+                <td colspan="5"><button id="btn-filas-promedio">Promedio de [filas], Promedio [Alto]</button></td>
+                <td colspan="5"><button id="btn-diagonal-principal">Suma de la diagonal principal</button></td>
+                
             </tr>
         </tfoot>
     </table>
-    <hr>
-    <table>
+    <br>
+    <table id="id-table-matriz-resultado" border="1" cellspacing="1" cellpadding="1">
         <thead>
             <tr>
-                <td colspan="2">Calculos con Matrices </td>
+                <td colspan="10">Resultado de Calculos con Matrices </td>
             </tr>
         </thead>
         <tbody>
-
         </tbody>
         <tfoot>
             <tr>
-                <td>Resultado:</td>
-                <td colspan="2"><input type="text" id="id-txt-respuesta"></td>
+                <td colspan="5"><textarea name="" id="id-txt-respuesta" cols="30" rows="10"></textarea></td>
             </tr>
-            </tbody>
+        </tfoot>
     </table>
-</body>
 
-<script>
-    let matriz = []
-    const NUM_MAXIMO_RANDOM = 20
+    <script>
+        // ARREGLO BIDIMENSIONAL
+        let matriz = []
+        let matrizResultado = []
 
-    const tableTbody = document.querySelector('#id-table-vector-numerico > tbody')
-    const btnCargarMatriz = document.getElementById("btn-cargar-matriz")
-    const btnVaciarMatriz = document.getElementById("btn-vaciar-matriz")
+        const NUM_MINIMO_RANDOM = -100
+        const NUM_MAXIMO_RANDOM = 100
 
-    const selectDimensionFilas = document.getElementById("select-dimension-filas")
-    const selectDimensionColumnas = document.getElementById("select-dimension-columnas")
+        // refrencia al cuerpo de la tabla: tbody
+        const tableTbody = document.querySelector('#id-table-matriz-numerico > tbody')
+        const tableTbodyResultado = document.querySelector('#id-table-matriz-resultado > tbody')
 
-    let FILAS = parseInt(selectDimensionFilas.options[selectDimensionFilas.selectedIndex].value)
-    let COLUMNAS = parseInt(selectDimensionColumnas.options[selectDimensionColumnas.selectedIndex].value)
+        // agregamos las referencias a los botones del DOM
+        const btnCargarMatriz = document.getElementById("btn-cargar-matriz")
+        const btnVaciarMatriz = document.getElementById("btn-vaciar-matriz")
+        const btnOrdenarMatriz = document.getElementById("btn-ordenar-matriz")
+        const btnSumaIndices = document.getElementById("btn-suma-indices")
+        const btnParImpar = document.getElementById("btn-par-impar")
+        const btnSumaMatriz = document.getElementById("btn-suma-matriz")
+        const btnSumarContar = document.getElementById("btn-suma-contar")
+        const btnNegatvioPositivo = document.getElementById("btn-negativo-positivo")
+        const btnMayorMatriz = document.getElementById("btn-numero-mayor")
+        const btnObtenerElemento = document.getElementById("btn-obtener-elemento")
+        const btnPromedioFilas = document.getElementById("btn-filas-promedio")
+        const btnDiagonalPrincipal = document.getElementById("btn-diagonal-principal")
+        const btnProductoMatriz = document.getElementById("btn-producto-matriz")
+        const btnAsignarLetra = document.getElementById("btn-asignacion-letra")
+        const btnCambiofila = document.getElementById("btn-cambio-fila")
+        const btnCambioColumnas = document.getElementById("btn-cambio-columna")
+        const btnOriginalResultante = document.getElementById("btn-original-resultante")
+        const btnTraspuestaMatriz = document.getElementById("btn-traspuesta-matriz")
+        const btnSumaFilaColumna = document.getElementById("btn-columna-fila")
+        const btnMediaAritmetica = document.getElementById("btn-media-aritmetica")
 
-    selectDimensionFilas.addEventListener('change', (event) => {
-        FILAS = parseInt(event.target.value)
-    })
+        // referencia a la caja de texto: control textarea
+        const txtRespuesta = document.getElementById("id-txt-respuesta")
 
-    selectDimensionColumnas.addEventListener('change', (event) => {
-        COLUMNAS = parseInt(event.target.value)
-    })
+        // agregamos referencia a los controles listas deplegables
+        const selectDimensionFilas = document.getElementById("select-dimension-filas")
+        const selectDimensionColumnas = document.getElementById("select-dimension-columnas")
 
-    btnCargarMatriz.addEventListener('click', (event) => {
-        event.preventDefault()
-        fnVaciarMatriz()
-        fnCargarMatriz()
-        fnPresentarMatriz()
-    })
+        // asigamos los valores por defecto que tienen las listas desplegables.
+        let FILAS = parseInt(selectDimensionFilas.options[selectDimensionFilas.selectedIndex].value)
+        let COLUMNAS = parseInt(selectDimensionColumnas.options[selectDimensionColumnas.selectedIndex].value)
 
-    function fnCargarMatriz() {
-        for (let f = 0; f < FILAS; f++) {
-            matriz[f] = []
-            for (let c = 0; c < COLUMNAS; c++) {
-                const numero = Math.ceil(Math.random() * NUM_MAXIMO_RANDOM)
-                matriz[f][c] = numero
+        // capturamos los eventos de los controles lista desplegables: Select
+        selectDimensionFilas.addEventListener('change', (event) => {
+            FILAS = parseInt(event.target.value)
+        })
+
+        selectDimensionColumnas.addEventListener('change', (event) => {
+            COLUMNAS = parseInt(event.target.value)
+        })
+
+        // evento del boton cargar matriz
+        btnCargarMatriz.addEventListener('click', (event) => {
+            event.preventDefault()
+            fnVaciarMatriz()
+            fnCargarMatriz()
+            fnOrdenarMatrizMeotodoBurbuja()
+            fnPresentarMatriz()
+        })
+
+        // Procedimiento cargar numeros aleatorios en Matriz M x N
+        function fnCargarMatriz() {
+            for (let f = 0; f < FILAS; f++) {
+                matriz[f] = []
+                for (let c = 0; c < COLUMNAS; c++) {
+                    const numero = Math.floor(Math.random() * (NUM_MAXIMO_RANDOM - NUM_MINIMO_RANDOM)) + NUM_MINIMO_RANDOM;
+                    matriz[f][c] = numero
+                }
             }
         }
-    }
-    function fnVaciarMatriz() {
-        matriz = []
-    }
 
-    function fnPresentarMatriz() {
-        let str = ''
-        for (let v of matriz) {
-            str += '<tr>'
-            str += v.map(e => `<td>${e}</td>`).join('')
-            str += '</tr>'
+        // evento del boton vaciar matriz
+        btnVaciarMatriz.addEventListener('click', (event) => {
+            event.preventDefault()
+            fnVaciarMatriz()
+            fnPresentarMatriz()
+        })
+
+        function fnVaciarMatriz() {
+            matriz = []
         }
-        tableTbody.innerHTML = str
-    }
+
+        // procedimiento que genera cadena de etiquetas HTML(tr,td) para presentar en la pantalla GUI
+        function fnPresentarMatriz() {
+            let str = ''
+            for (let v of matriz) {
+                str += '<tr>'
+                str += v.map(e => `<td>${e}</td>`).join('')
+                str += '</tr>'
+            }
+            tableTbody.innerHTML = str
+        }
+        // procedimiento que genera cadena de etiquetas HTML(tr,td) para presentar en la pantalla GUI
+        function fnPresentarMatrizResultado() {
+            let str = ''
+            for (let v of matrizResultado) {
+                str += '<tr>'
+                str += v.map(e => `<td>${e}</td>`).join('')
+                str += '</tr>'
+            }
+            tableTbodyResultado.innerHTML = str
+        }
+
+
+        // metodos de burbuja
+        btnOrdenarMatriz.addEventListener('click', (event) => {
+            event.preventDefault()
+            fnOrdenarMatrizMeotodoBurbuja()
+            fnPresentarMatriz()
+
+
+
+        })
+
+        // ordenamiento de valores por metodos de burbuja,
+        // recorriendo todos los elementos de la matriz
+        function fnOrdenarMatrizMeotodoBurbuja() {
+            matrizResultado = [...matriz]
+            for (let m = 0; m < FILAS; m++) {
+
+                for (let n = 0; n < COLUMNAS; n++) {
+
+                    for (let f = 0; f < FILAS; f++) {
+
+                        for (let c = 0; c < COLUMNAS; c++) {
+
+                            if (matrizResultado[m][n] < matrizResultado[f][c]) {
+                                const temp = matrizResultado[m][n]
+                                matrizResultado[m][n] = matrizResultado[f][c]
+                                matrizResultado[f][c] = temp
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+
+        //1.a) Cada elemento de la matriz debe ser la suma del valor del índice correspondiente
+        //a la fila más el valor del índice correspondiente a la columna. Ejemplo: MAT[0][2]: 2 y MAT[2][4]: 6.
+
+        btnSumaIndices.addEventListener(`click`, (event) => {
+            event.preventDefault()
+            fnPresentarMatrizResultado()
+            fnSumaIndices()
+        })
+
+        function fnSumaIndices() {
+            let espacio = []
+            for (let i = 0; i < FILAS; i++) {
+                espacio[i] = []
+                for (let j = 0; j < COLUMNAS; j++) {
+                    matriz[i][j] = i + j
+                }
+            }
+
+        }
+
+        // Cuando el valor de la columna sea impar el contenido de la matriz debe ser 1 y
+        // cuando el valor de la columna sea par el valor de matriz debe ser 0. Ejemplo: MAT[0][0]: 0 y MAT[2][3]: 1.
+
+        btnParImpar.addEventListener(`click`, (event) => {
+            event.preventDefault()
+            fnPresentarMatrizResultado()
+            fnParImpar()
+        })
+
+        function fnParImpar() {
+            matrizResultado = [...matriz]
+            for (let i = 0; i < FILAS; i++) {
+                for (let j = 0; j < COLUMNAS; j++) {
+                    if (j % 2 == 0) {
+                        matriz[i][j] = 0
+                    } else {
+                        matriz[i][j] = 1
+                    }
+                }
+            }
+        }
+
+        // Calcular la suma de todos los elementos de una matriz de M x N elementos. 
+        // Mostrar la matriz generada y su suma
+
+        btnSumaMatriz.addEventListener('click', (event) => {
+            event.preventDefault();
+            txtRespuesta.value = fnSumaMatriz();
+        });
+
+        function fnSumaMatriz() {
+            let contador = 0;
+            for (let i = 0; i < FILAS; i++) {
+                for (let j = 0; j < COLUMNAS; j++) {
+                    contador += matriz[i][j];
+                }
+            }
+            return 'La suma de la matriz es: ' + contador;
+        }
+
+        // Sumar y contar los elementos positivos y los negativos de una matriz (M x N). 
+        // Mostrar los resultados.
+
+        btnSumarContar.addEventListener('click', (event) => {
+            event.preventDefault();
+            txtRespuesta.value = fnSumarContar();
+        });
+
+        function fnSumarContar() {
+            let SumaNegativos = 0;
+            let SumaPositivos = 0;
+            let contadorNegativos = 0;
+            let contadorPositivos = 0;
+
+            for (let i = 0; i < FILAS; i++) {
+                for (let j = 0; j < COLUMNAS; j++) {
+                    if (matriz[i][j] < 0) {
+                        SumaNegativos += matriz[i][j];
+                        contadorNegativos++;
+                    } else {
+                        SumaPositivos += matriz[i][j];
+                        contadorPositivos++;
+                    }
+                }
+            }
+
+            return "La cantidad de positivos es: " + contadorPositivos + "\n" +
+                "La suma de positivos es: " + SumaPositivos + "\n" +
+                "Cantidad de negativos es: " + contadorNegativos + "\n" +
+                "La suma de negativos es: " + SumaNegativos + "\n";
+        }
+
+        // Reemplazar los elementos negativos por -1 y los elementos positivos por 0.
+
+        btnNegatvioPositivo.addEventListener('click', (event) => {
+            event.preventDefault();
+            fnNegativoPositivo()
+            fnPresentarMatrizResultado()
+        });
+
+        function fnNegativoPositivo() {
+            for (let i = 0; i < FILAS; i++) {
+                for (let j = 0; j < COLUMNAS; j++) {
+                    if (matriz[i][j] < 0) {
+                        matriz[i][j] = -1
+                    } else {
+                        matriz[i][j] = 0
+                    }
+                }
+            }
+        }
+
+        // Buscar el mayor elemento de la matriz.
+
+        btnMayorMatriz.addEventListener('click', (event) => {
+            event.preventDefault();
+            txtRespuesta.value = fnMayorMatriz();
+        });
+
+        function fnMayorMatriz() {
+            let mayorElemento = matriz[0][0];
+            for (let i = 0; i < FILAS; i++) {
+                for (let j = 0; j < COLUMNAS; j++) {
+                    if (matriz[i][j] > mayorElemento) {
+                        mayorElemento = matriz[i][j];
+                    }
+                }
+            }
+
+            return "El elemento mayor es: " + mayorElemento;
+        }
+
+        // Obtener el elemento de una determinada posición (fila, columna) por búsqueda
+        // secuencial o binaria
+
+        btnObtenerElemento.addEventListener('click', (event) => {
+            event.preventDefault();
+            txtRespuesta.value = fnObtenerElemento();
+        });
+
+        function fnObtenerElemento() {
+            let valorFila = parseInt(prompt("Ingresar la Posición en la Fila"));
+            let valorColumna = parseInt(prompt("Ingresar la Posición en la Columna"));
+            let elemento = -1
+            if (valorFila >= 0 && valorFila < FILAS && valorColumna >= 0 && valorColumna < COLUMNAS) {
+                let elemento = matriz[valorFila][valorColumna];
+                return "El elemento se encuentra en la matriz: " + elemento;
+            } else {
+                return "La posición no está dentro de los límites de la matriz.";
+            }
+        }
+
+        // Calcular el promedio de cada fila. Se quiere saber, a partir de ello, cuál es el promedio más alto.
+
+        btnPromedioFilas.addEventListener('click', (event) => {
+            event.preventDefault();
+            txtRespuesta.value = fnPromedioFilas();
+        });
+
+        function fnPromedioFilas() {
+            let promedios = [];
+            let promedioAlto = -Infinity;
+
+            for (let i = 0; i < FILAS; i++) {
+                let suma = 0;
+
+                for (let j = 0; j < COLUMNAS; j++) {
+                    suma += matriz[i][j];
+                }
+
+                let promedio = suma / COLUMNAS;
+                promedios.push(promedio);
+
+                if (promedio > promedioAlto) {
+                    promedioAlto = promedio;
+                }
+            }
+
+            return "El promedio de cada fila es: " + promedios.join(", ") + "\nEl promedio más alto es: " + promedioAlto;
+        }
+
+        // Calcular la suma de los elementos de la diagonal principal de una matriz 
+        // cuadrada. Mostrar el resultado.
+
+        btnDiagonalPrincipal.addEventListener('click', (event) => {
+            event.preventDefault();
+            txtRespuesta.value = fnDiagonalPrincipal();
+        });
+
+        function fnDiagonalPrincipal() {
+            let sumaDiagonal = 0;
+
+            for (let i = 0; i < FILAS; i++) {
+                sumaDiagonal += matriz[i][i];
+            }
+
+            return "La suma de los elementos de la diagonal principal es: " + sumaDiagonal;
+        }
+
+        //Calcular el producto de los elementos del contorno de la matriz. Mostrar el resultado.
+
+        btnProductoMatriz.addEventListener('click', (event) => {
+            event.preventDefault();
+            txtRespuesta.value = fnProductoMatriz();
+        });
+
+        function fnProductoMatriz() {
+            let productoContorno = 1;
+
+            for (let i = 0; i < FILAS; i++) {
+                for (let j = 0; j < COLUMNAS; j++) {
+                    if (i === 0 || i === FILAS - 1 || j === 0 || j === COLUMNAS - 1) {
+                        productoContorno *= matriz[i][j];
+                    }
+                }
+            }
+
+            return "El producto de los elementos del contorno de la matriz es: " + productoContorno;
+        }
+
+        //  Se cuenta con una matriz de caracteres. Asignar la letra ‘N’ a todos los elementos 
+        // de la matriz excepto a los de la diagonal que les debe asignar la letra ‘D’.
+        // Imprima la matriz resultante.
+
+        btnAsignarLetra.addEventListener('click', (event) => {
+            event.preventDefault();
+            fnPresentarMatrizResultado()
+            fnAsignarLetra();
+        });
+
+        function fnAsignarLetra() {
+            for (let i = 0; i < matriz.length; i++) {
+                for (let j = 0; j < matriz[i].length; j++) {
+                    if (i === j) {
+                        matriz[i][j] = "D"
+                    } else {
+                        matriz[i][j] = "E"
+                    }
+                }
+            }
+        }
+
+        // Intercambiar la primera fila por la última fila.
+
+        btnCambiofila.addEventListener('click', (event) => {
+            event.preventDefault();
+            fnPresentarMatrizResultado();
+            fnCambioFilas();
+        });
+
+        function fnCambioFilas() {
+            matrizResultado = [...matriz]
+            let primeraFila = matriz[0];
+            matriz[0] = matriz[matriz.length - 1];
+            matriz[matriz.length - 1] = primeraFila;
+        }
+
+        //  Intercambiar la segunda columna por la anteúltima columna.
+
+        btnCambioColumnas.addEventListener('click', (event) => {
+            event.preventDefault();
+            fnPresentarMatrizResultado()
+            fnCambioColumnas();
+        });
+
+        function fnCambioColumnas() {
+            matrizResultado = [...matriz]
+            for (let i = 0; i < matriz.length; i++) {
+                let auxiliar = matriz[i][1];
+                matriz[i][1] = matriz[i][matriz[i].length - 2];
+                matriz[i][matriz[i].length - 2] = auxiliar;
+            }
+        }
+
+        // Calcular la Traspuesta de una matriz y mostrar la matriz resultante.
+
+        btnTraspuestaMatriz.addEventListener('click', (event) => {
+            event.preventDefault();
+            fnPresentarMatrizResultado()
+            fnTranspuestaMatriz()
+        });
+
+        function fnTranspuestaMatriz() {
+            matrizResultado = [...matriz]
+            let transpuesta = [];
+            for (let i = 0; i < COLUMNAS; i++) {
+                transpuesta[i] = [];
+            }
+            for (let i = 0; i < FILAS; i++) {
+                for (let j = 0; j < COLUMNAS; j++) {
+                    transpuesta[j][i] = matriz[i][j];
+                }
+            }
+            matriz = transpuesta;
+        }
+
+        // 10. Calcular la suma de cada una de sus filas y cada una de sus columnas, guardando 
+        // los resultados en dos vectores, es decir, las sumas de las filas en un vector y las
+        // sumas de las columnas en otro vector. Mostrar los vectores resultantes.
+
+        btnSumaFilaColumna.addEventListener('click', (event) => {
+            event.preventDefault();
+            txtRespuesta.value = fnSumaFilaColumna()
+        });
+
+        function fnSumaFilaColumna() {
+            matrizResultado = [...matriz];
+
+            let filas = matrizResultado.map((fila, index) => {
+                return "Fila[" + index + "] = " + fila.reduce((suma, elemento) => suma + elemento, 0);
+            });
+
+            let columnas = matrizResultado[0].map((_, columna) => {
+                let sumaColumna = matrizResultado.reduce((suma, fila) => suma + fila[columna], 0);
+                return "Columna[" + columna + "] = " + sumaColumna;
+            });
+
+            return "Suma de filas:\n" + filas.join("\n") + "\nSuma de columnas:\n" + columnas.join("\n");
+        }
+
+        //  Dada una matriz cuadrada de orden N. Calcular la matriz que resulta de restar a 
+        // cada elemento de la matriz la media aritmética de su fila (A[i][j] = A[i][j] - \sum A[i][j] / N)
+        // / N). Imprimir la matriz original y la resultante.
+
+        btnMediaAritmetica.addEventListener('click', (event) => {
+            event.preventDefault();
+            fnMediaAritmetica();
+            fnPresentarMatrizResultado();
+        });
+
+        function fnMediaAritmetica() {
+            matrizResultado = [...matriz];
+            const restaMatriz = [];
+            const sumarFilas = fnSumarFilas(matrizResultado);
+
+            for (let i = 0; i < FILAS; i++) {
+                const filaResta = [];
+                for (let j = 0; j < COLUMNAS; j++) {
+                    const mediaFila = sumarFilas[i] / matrizResultado.length;
+                    const elementoRestado = matrizResultado[i][j] - mediaFila;
+                    filaResta.push(elementoRestado.toFixed(1));
+                }
+                restaMatriz.push(filaResta);
+            }
+
+            matrizResultado = restaMatriz;
+        }
+
+        function fnSumarFilas(matriz) {
+            const sumasFilas = [];
+            for (let i = 0; i < matriz.length; i++) {
+                let sumaFila = 0;
+                for (let j = 0; j < matriz[i].length; j++) {
+                    sumaFila += matriz[i][j];
+                }
+                sumasFilas.push(sumaFila);
+            }
+            return sumasFilas;
+        }
 
 </script>
 
